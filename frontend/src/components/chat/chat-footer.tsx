@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { MessageType } from "@/types/chat.type";
+import type { MessageType } from "@/types/chat";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";

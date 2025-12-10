@@ -1,7 +1,7 @@
 import { format, isToday, isYesterday, isThisWeek } from "date-fns";
 import { v4 as uuidv4 } from "uuid";
 import { useSocket } from "@/hooks/use-socket";
-import type { ChatType } from "@/types/chat.type";
+import type { ChatType } from "@/types/chat";
 
 export const isUserOnline = (userId?: string) => {
   if (!userId) return false;

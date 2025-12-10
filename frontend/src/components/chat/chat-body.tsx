@@ -1,6 +1,6 @@
 import { useChat } from "@/hooks/use-chat";
 import { useSocket } from "@/hooks/use-socket";
-import type { MessageType } from "@/types/chat.type";
+import type { MessageType } from "@/types/chat";
 import { useEffect, useRef } from "react";
 import ChatBodyMessage from "./chat-body-message";
 

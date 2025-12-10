@@ -9,7 +9,7 @@ import {
   InputGroupInput,
 } from "../ui/input-group";
 import { Spinner } from "../ui/spinner";
-import type { UserType } from "../../types/auth.type";
+import type { UserType } from "../../types/auth";
 import AvatarWithBadge from "../avatar-with-badge";
 import { Checkbox } from "../ui/checkbox";
 import { useNavigate } from "react-router-dom";

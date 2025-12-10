@@ -6,8 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
 import ChatListHeader from "./chat-list-header";
 import { useSocket } from "@/hooks/use-socket";
-import type { ChatType } from "@/types/chat.type";
-import type { MessageType } from "../../types/chat.type";
+import type { ChatType } from "@/types/chat";
+import type { MessageType } from "../../types/chat";
 
 const ChatList = () => {
   const navigate = useNavigate();

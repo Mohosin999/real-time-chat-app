@@ -6,7 +6,7 @@ import { Outlet } from "react-router-dom";
 
 const AppLayout = () => {
   const chatId = useChatId();
-  
+
   return (
     <AppWrapper>
       <div className="h-full">
@@ -14,7 +14,7 @@ const AppLayout = () => {
         <div className={cn(chatId ? "hidden lg:block" : "block")}>
           <ChatList />
         </div>
-        
+
         <div
           className={cn(
             "lg:pl-95! pl-7",

@@ -1,6 +1,6 @@
 import { getOtherUserAndGroup } from "@/lib/helper";
 import { cn } from "@/lib/utils";
-import type { ChatType } from "@/types/chat.type";
+import type { ChatType } from "@/types/chat";
 import { useLocation } from "react-router-dom";
 import AvatarWithBadge from "../avatar-with-badge";
 import { formatChatTime } from "../../lib/helper";

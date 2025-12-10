@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
-import type { MessageType } from "@/types/chat.type";
+import type { MessageType } from "@/types/chat";
 import AvatarWithBadge from "../avatar-with-badge";
 import { formatChatTime } from "@/lib/helper";
 import { Button } from "../ui/button";

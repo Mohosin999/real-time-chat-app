@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { API } from "@/lib/axios-client";
-import type { LoginType, RegisterType, UserType } from "@/types/auth.type";
 import { toast } from "sonner";
 import { create } from "zustand";
-// import { persist } from "zustand/middleware";
 import { useSocket } from "./use-socket";
+import type { LoginType, RegisterType, UserType } from "@/types/auth";
 
 interface AuthState {
   user: UserType | null;

@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand";
-import type { UserType } from "@/types/auth.type";
+import type { UserType } from "@/types/auth";
 import type {
   ChatType,
   CreateChatType,
   CreateMessageType,
   MessageType,
-} from "@/types/chat.type";
+} from "@/types/chat";
 import { API } from "@/lib/axios-client";
 import { toast } from "sonner";
 import { useAuth } from "./use-auth";

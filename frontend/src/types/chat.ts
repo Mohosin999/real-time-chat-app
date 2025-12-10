@@ -1,4 +1,4 @@
-import type { UserType } from "./auth.type";
+import type { UserType } from "./auth";
 
 export type ChatType = {
   _id: string;

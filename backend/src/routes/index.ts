@@ -16,7 +16,7 @@ router
   .post("/api/v1/auth/register", authControllers.register)
   .post("/api/v1/auth/login", authControllers.login)
   .post("/api/v1/auth/logout", authControllers.logout)
-  .post("/api/v1/auth/status", authControllers.authStatus);
+  .get("/api/v1/auth/status", authControllers.authStatus);
 
 /* -------------------------------------------
           GOOGLE OAUTH ROUTES

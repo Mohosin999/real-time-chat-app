@@ -1,6 +1,6 @@
 import SignIn from "@/pages/auth/sign-in";
 import SignUp from "@/pages/auth/sign-up";
-import Chat from "@/pages/Chat";
+import Chat from "@/pages/chat";
 import SingleChat from "@/pages/chat/chatId";
 
 export const AUTH_ROUTES = {
