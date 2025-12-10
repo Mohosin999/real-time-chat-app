@@ -55,10 +55,12 @@ export const useSocket = create<SocketState>()((set, get) => ({
    */
   disconnectSocket: () => {
     const { socket } = get();
-    
+
     if (socket) {
       socket.disconnect(); // Disconnect the socket
       set({ socket: null }); // Reset the socket in state
     }
   },
 }));
+
+// 4 hours 4min
