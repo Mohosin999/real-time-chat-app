@@ -16,6 +16,8 @@ import AvatarWithBadge from "./avatar-with-badge";
 
 const AsideBar = () => {
   const { user, logout } = useAuth();
+  // console.log("is user null? -> ", user);
+
   const { theme, setTheme } = useTheme();
 
   const isOnline = isUserOnline(user?._id);

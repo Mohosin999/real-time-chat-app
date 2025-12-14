@@ -248,9 +248,14 @@ export const useChat = create<ChatState>()((set, get) => ({
 
       if (!targetChat) return state;
 
+      /**
+       * Create a new chat list
+       * - Put the updated chat at the top
+       * - Keep all other chats below in their previous order
+       */
       return {
         chats: [
-          { ...targetChat, lastMessage }, // updated version at top
+          { ...targetChat, lastMessage },
           ...state.chats.filter((c) => c._id !== chatId),
         ],
       };

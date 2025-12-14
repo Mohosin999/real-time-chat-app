@@ -9,8 +9,6 @@ const app = express();
 applyMiddleware(app);
 app.use(routes);
 
-
-
 app.use(errorHandler);
 
 app.get(

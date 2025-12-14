@@ -1,230 +1,130 @@
-// /* eslint-disable @typescript-eslint/no-explicit-any */
-// import { API } from "@/lib/axios-client";
-// import { toast } from "sonner";
-// import { create } from "zustand";
-// import { useSocket } from "./use-socket";
-// import type { LoginType, RegisterType, UserType } from "@/types/auth";
-
-// interface AuthState {
-//   user: UserType | null;
-//   isLoggingIn: boolean;
-//   isSigningUp: boolean;
-//   isAuthStatusLoading: boolean;
-
-//   register: (data: RegisterType) => void;
-//   login: (data: LoginType) => void;
-//   logout: () => void;
-//   isAuthStatus: () => void;
-// }
-
-// // Create the Zustand store for authentication
-// export const useAuth = create<AuthState>()((set) => ({
-//   user: null,
-//   isSigningUp: false,
-//   isLoggingIn: false,
-//   isAuthStatusLoading: false,
-
-//   /**
-//    * -------------------------------------------------
-//    * Register a new user
-//    * -------------------------------------------------
-//    */
-//   register: async (data: RegisterType) => {
-//     set({ isSigningUp: true });
-
-//     try {
-//       const response = await API.post("/auth/register", data);
-//       set({ user: response.data.user });
-
-//       // Connect to socket after successful register
-//       useSocket.getState().connectSocket();
-
-//       toast.success("Register successfully");
-//     } catch (err: any) {
-//       toast.error(err.response?.data?.message || "Register failed");
-//     } finally {
-//       set({ isSigningUp: false });
-//     }
-//   },
-
-//   /**
-//    * -------------------------------------------------
-//    * Log in a user
-//    * -------------------------------------------------
-//    */
-//   login: async (data: LoginType) => {
-//     set({ isLoggingIn: true });
-
-//     try {
-//       const response = await API.post("/auth/login", data);
-//       set({ user: response.data.user });
-
-//       // Connect to socket after successful login
-//       useSocket.getState().connectSocket();
-
-//       toast.success("Login successfully");
-//     } catch (err: any) {
-//       toast.error(err.response?.data?.message || "Login failed");
-//     } finally {
-//       set({ isLoggingIn: false });
-//     }
-//   },
-
-//   /**
-//    * -------------------------------------------------
-//    * Logout the user
-//    * -------------------------------------------------
-//    */
-//   logout: async () => {
-//     try {
-//       await API.post("/auth/logout");
-//       set({ user: null });
-
-//       // Disconnect socket after logout
-//       useSocket.getState().disconnectSocket();
-
-//       toast.success("Logout successfully");
-//     } catch (err: any) {
-//       toast.error(err.response?.data?.message || "Logout failed");
-//     }
-//   },
-
-//   /**
-//    * -------------------------------------------------
-//    * Check if the user is already authenticated
-//    * -------------------------------------------------
-//    */
-//   isAuthStatus: async () => {
-//     set({ isAuthStatusLoading: true });
-
-//     try {
-//       const response = await API.get("/auth/status");
-//       set({ user: response.data.user });
-
-//       // Connect socket if authenticated
-//       useSocket.getState().connectSocket();
-//     } catch (err: any) {
-//       toast.error(err.response?.data?.message || "Authentication failed");
-//       console.log(err);
-//     } finally {
-//       set({ isAuthStatusLoading: false });
-//     }
-//   },
-// }));
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { API } from "@/lib/axios-client";
 import { toast } from "sonner";
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import { useSocket } from "./use-socket";
 import type { LoginType, RegisterType, UserType } from "@/types/auth";
 
 interface AuthState {
   user: UserType | null;
+
   isLoggingIn: boolean;
   isSigningUp: boolean;
   isAuthStatusLoading: boolean;
 
-  register: (data: RegisterType) => void;
-  login: (data: LoginType) => void;
-  logout: () => void;
-  isAuthStatus: () => void;
+  register: (data: RegisterType) => Promise<void>;
+  login: (data: LoginType) => Promise<void>;
+  logout: () => Promise<void>;
+  isAuthStatus: () => Promise<void>;
 }
 
-// Create the Zustand store for authentication
-export const useAuth = create<AuthState>()((set) => ({
-  user: null,
-  isSigningUp: false,
-  isLoggingIn: false,
-  isAuthStatusLoading: false,
+export const useAuth = create<AuthState>()(
+  persist(
+    (set, get) => ({
+      user: null,
 
-  /**
-   * -------------------------------------------------
-   * Register a new user
-   * -------------------------------------------------
-   */
-  register: async (data: RegisterType) => {
-    set({ isSigningUp: true });
+      isLoggingIn: false,
+      isSigningUp: false,
+      isAuthStatusLoading: false,
 
-    try {
-      const response = await API.post("/auth/register", data);
-      set({ user: response.data.user });
-      localStorage.setItem("user", JSON.stringify(response.data.user));
+      /* ---------------------------------
+       * Register
+       * --------------------------------- */
+      register: async (data) => {
+        set({ isSigningUp: true });
 
-      // Connect to socket after successful register
-      useSocket.getState().connectSocket();
+        try {
+          const res = await API.post("/auth/register", data);
 
-      toast.success("Register successfully");
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || "Register failed");
-    } finally {
-      set({ isSigningUp: false });
+          set({ user: res.data.user });
+
+          // socket connect only once
+          useSocket.getState().connectSocket();
+
+          toast.success("Register successfully");
+        } catch (err: any) {
+          toast.error(err.response?.data?.message || "Register failed");
+        } finally {
+          set({ isSigningUp: false });
+        }
+      },
+
+      /* ---------------------------------
+       * Login
+       * --------------------------------- */
+      login: async (data) => {
+        set({ isLoggingIn: true });
+
+        try {
+          const res = await API.post("/auth/login", data);
+
+          set({ user: res.data.user });
+
+          useSocket.getState().connectSocket();
+
+          toast.success("Login successfully");
+        } catch (err: any) {
+          toast.error(err.response?.data?.message || "Login failed");
+        } finally {
+          set({ isLoggingIn: false });
+        }
+      },
+
+      /* ---------------------------------
+       * Logout
+       * --------------------------------- */
+      logout: async () => {
+        try {
+          await API.post("/auth/logout");
+
+          set({ user: null });
+
+          useSocket.getState().disconnectSocket();
+
+          toast.success("Logout successfully");
+        } catch (err: any) {
+          toast.error(err.response?.data?.message || "Logout failed");
+        }
+      },
+
+      /* ---------------------------------
+       * Auth Status (ONLY when needed)
+       * --------------------------------- */
+      isAuthStatus: async () => {
+        // 🚨 important: if already have user, skip API call
+        if (get().user) return;
+
+        set({ isAuthStatusLoading: true });
+
+        try {
+          const res = await API.get("/auth/status");
+
+          set({ user: res.data.user });
+
+          useSocket.getState().connectSocket();
+        } catch {
+          set({ user: null });
+        } finally {
+          set({ isAuthStatusLoading: false });
+        }
+      },
+    }),
+    {
+      name: "auth-storage",
+      // storage: createJSONStorage(() => localStorage),
+
+      // // ✅ ONLY persist user
+      // partialize: (state) => ({
+      //   user: state.user,
+      // }),
+
+      // // ✅ reload হলে socket auto connect
+      // onRehydrateStorage: () => (state) => {
+      //   if (state?.user) {
+      //     useSocket.getState().connectSocket();
+      //   }
+      // },
     }
-  },
-
-  /**
-   * -------------------------------------------------
-   * Log in a user
-   * -------------------------------------------------
-   */
-  login: async (data: LoginType) => {
-    set({ isLoggingIn: true });
-
-    try {
-      const response = await API.post("/auth/login", data);
-      set({ user: response.data.user });
-      localStorage.setItem("user", JSON.stringify(response.data.user));
-
-      // Connect to socket after successful login
-      useSocket.getState().connectSocket();
-
-      toast.success("Login successfully");
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || "Login failed");
-    } finally {
-      set({ isLoggingIn: false });
-    }
-  },
-
-  /**
-   * -------------------------------------------------
-   * Logout the user
-   * -------------------------------------------------
-   */
-  logout: async () => {
-    try {
-      await API.post("/auth/logout");
-      set({ user: null });
-      localStorage.removeItem("user");
-
-      // Disconnect socket after logout
-      useSocket.getState().disconnectSocket();
-
-      toast.success("Logout successfully");
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || "Logout failed");
-    }
-  },
-
-  /**
-   * -------------------------------------------------
-   * Check if the user is already authenticated
-   * -------------------------------------------------
-   */
-  isAuthStatus: async () => {
-    set({ isAuthStatusLoading: true });
-
-    try {
-      const response = await API.get("/auth/status");
-      set({ user: response.data.user });
-
-      // Connect socket if authenticated
-      useSocket.getState().connectSocket();
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || "Authentication failed");
-      console.log(err);
-    } finally {
-      set({ isAuthStatusLoading: false });
-    }
-  },
-}));
+  )
+);
