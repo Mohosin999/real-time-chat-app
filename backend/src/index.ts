@@ -64,15 +64,15 @@ const port = process.env.PORT || 5001;
 initializeSocket(server);
 
 // Serve Frontend
-if (process.env.NODE_ENV === "production") {
-  const clientPath = path.resolve(__dirname, "../../frontend/dist");
+// if (process.env.NODE_ENV === "production") {
+//   const clientPath = path.resolve(__dirname, "../../frontend/dist");
 
-  app.use(express.static(clientPath));
+//   app.use(express.static(clientPath));
 
-  app.get(/^(?!\/api).*/, (_req: Request, res: Response) => {
-    res.sendFile(path.resolve(clientPath, "index.html"));
-  });
-}
+//   app.get(/^(?!\/api).*/, (_req: Request, res: Response) => {
+//     res.sendFile(path.resolve(clientPath, "index.html"));
+//   });
+// }
 
 const main = async () => {
   try {
