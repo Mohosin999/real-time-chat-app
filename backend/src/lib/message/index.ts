@@ -8,7 +8,7 @@ import { emitLastMessageToParticipants, emitNewMessageToChatRoom } from "../sock
 export const sendMessageService = async (
   userId: string,
   body: {
-    chatId: string;
+    chatId?: string;
     content?: string;
     image?: string;
     replyToId?: string;
