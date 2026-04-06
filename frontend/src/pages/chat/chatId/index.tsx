@@ -65,7 +65,7 @@ const SingleChat = () => {
 
   return (
     <div className="relative h-svh flex flex-col">
-      <ChatHeader chat={chat} currentUserId={currentUserId} />
+      <ChatHeader chat={chat} currentUserId={currentUserId} isTyping={isTyping} />
 
       <div className="flex-1 overflow-y-auto bg-background">
         {messages.length === 0 ? (
@@ -74,11 +74,10 @@ const SingleChat = () => {
             description="No messages yet. Send the first message"
           />
         ) : (
-          <ChatBody 
-            chatId={chatId} 
-            messages={messages} 
+          <ChatBody
+            chatId={chatId}
+            messages={messages}
             onReply={setReplyTo}
-            isTyping={isTyping}
           />
         )}
       </div>

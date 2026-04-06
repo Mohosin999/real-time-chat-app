@@ -1,6 +1,5 @@
 import { useAuth } from "@/hooks/use-auth";
 import { useTheme } from "./theme-provider";
-import { isUserOnline } from "@/lib/helper";
 import Logo from "./logo";
 import { PROTECTED_ROUTES } from "@/routes/routes";
 import { Button } from "./ui/button";

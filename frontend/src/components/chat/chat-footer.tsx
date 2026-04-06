@@ -33,7 +33,7 @@ const ChatFooter = ({
 
   const [image, setImage] = useState<string | null>(null);
   const imageInputRef = useRef<HTMLInputElement | null>(null);
-  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const form = useForm({
     resolver: zodResolver(messageSchema),

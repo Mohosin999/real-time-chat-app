@@ -7,8 +7,9 @@ import AvatarWithBadge from "../avatar-with-badge";
 interface Props {
   chat: ChatType;
   currentUserId: string | null;
+  isTyping?: boolean;
 }
-const ChatHeader = ({ chat, currentUserId }: Props) => {
+const ChatHeader = ({ chat, currentUserId, isTyping }: Props) => {
   const navigate = useNavigate();
   const { name, subheading, avatar, isOnline, isGroup } = getOtherUserAndGroup(
     chat,
@@ -42,10 +43,14 @@ const ChatHeader = ({ chat, currentUserId }: Props) => {
           <h5 className="font-semibold">{name}</h5>
           <p
             className={`text-sm ${
-              isOnline ? "text-green-500" : "text-muted-foreground"
+              isTyping
+                ? "text-blue-500"
+                : isOnline
+                ? "text-green-500"
+                : "text-muted-foreground"
             }`}
           >
-            {subheading}
+            {isTyping ? "typing..." : subheading}
           </p>
         </div>
       </div>

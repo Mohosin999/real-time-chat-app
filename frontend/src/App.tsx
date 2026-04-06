@@ -39,8 +39,6 @@ import { useAuth } from "./hooks/use-auth";
 import AppRoutes from "./routes";
 import { Spinner } from "./components/ui/spinner";
 import Logo from "./components/logo";
-import { useStore } from "zustand";
-import { persist } from "zustand/middleware";
 
 function App() {
   const { user, isAuthStatus, isAuthStatusLoading } = useAuth();
