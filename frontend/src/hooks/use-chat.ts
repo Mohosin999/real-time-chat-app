@@ -316,7 +316,6 @@ export const useChat = create<ChatState>()((set, get) => ({
       return {
         singleChat: {
           ...state.singleChat,
-          // Mark message as deleted instead of removing it
           messages: state.singleChat.messages.map((msg) =>
             msg._id === messageId
               ? { ...msg, content: null, image: null, deletedAt: new Date().toISOString() }

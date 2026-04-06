@@ -88,13 +88,13 @@ export const deleteMessageService = async (messageId: string, userId: string) =>
   // Store image URL before nulling it out (for Cloudinary deletion)
   const imageUrl = message.image;
   
-  // Soft delete the message
+  // Soft delete the message (null content/image, set deletedAt)
   message.content = null;
   message.image = null;
   message.deletedAt = new Date();
   await message.save();
 
-  // Delete image from Cloudinary if it exists
+  // Delete image from Cloudinary if it existed
   if (imageUrl) {
     const publicId = imageUrl.split("/").pop()?.split(".")[0];
     if (publicId) {
@@ -102,7 +102,7 @@ export const deleteMessageService = async (messageId: string, userId: string) =>
     }
   }
 
-  // Get chat to update lastMessage and emit events
+  // Get chat to update lastMessage
   const chat = await Chat.findById(message.chatId);
   
   if (chat && chat.lastMessage?.toString() === messageId) {

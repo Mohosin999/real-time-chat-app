@@ -18,7 +18,7 @@ const AppLayout = () => {
         <div
           className={cn(
             "lg:pl-95! pl-7",
-            !chatId ? "hidden lg:block" : "block"
+            !chatId ? "hidden lg:block" : "block",
           )}
         >
           <Outlet />
