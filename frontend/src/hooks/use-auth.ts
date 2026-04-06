@@ -76,9 +76,15 @@ export const useAuth = create<AuthState>()(
       logout: async () => {
         try {
           await API.post("/auth/logout");
-          set({ user: null });
-
+          
+          // Disconnect socket
           useSocket.getState().disconnectSocket();
+          
+          // Clear localStorage (Zustand persist storage)
+          localStorage.removeItem("auth-storage");
+          
+          // Reset all auth state
+          set({ user: null, isLoggingIn: false, isSigningUp: false, isAuthStatusLoading: false });
 
           toast.success("Logout successfully");
           window.location.href = "/sign-in";

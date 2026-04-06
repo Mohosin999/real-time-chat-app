@@ -8,13 +8,34 @@ interface Props {
   chat: ChatType;
   currentUserId: string | null;
   isTyping?: boolean;
+  typingUsers?: string[];
 }
-const ChatHeader = ({ chat, currentUserId, isTyping }: Props) => {
+const ChatHeader = ({
+  chat,
+  currentUserId,
+  isTyping,
+  typingUsers = [],
+}: Props) => {
   const navigate = useNavigate();
   const { name, subheading, avatar, isOnline, isGroup } = getOtherUserAndGroup(
     chat,
-    currentUserId
+    currentUserId,
   );
+
+  // Get typing users names (for group chats)
+  const getTypingText = () => {
+    if (!isTyping) return null;
+
+    if (isGroup && typingUsers.length > 0) {
+      // For group chats, you'd need to map userIds to names
+      // For now, show a generic message
+      return typingUsers.length === 1
+        ? "typing"
+        : `${typingUsers.length} people are typing...`;
+    }
+
+    return "typing";
+  };
 
   return (
     <div
@@ -44,13 +65,33 @@ const ChatHeader = ({ chat, currentUserId, isTyping }: Props) => {
           <p
             className={`text-sm ${
               isTyping
-                ? "text-blue-500"
+                ? "text-blue-500 dark:text-blue-400"
                 : isOnline
-                ? "text-green-500"
-                : "text-muted-foreground"
+                  ? "text-green-500"
+                  : "text-muted-foreground"
             }`}
           >
-            {isTyping ? "typing..." : subheading}
+            {isTyping ? (
+              <span className="flex items-center gap-1">
+                {getTypingText()}
+                <span className="inline-flex gap-0.5 ml-0.5">
+                  <span
+                    className="w-1 h-1 bg-current rounded-full animate-bounce"
+                    style={{ animationDelay: "0ms" }}
+                  />
+                  <span
+                    className="w-1 h-1 bg-current rounded-full animate-bounce"
+                    style={{ animationDelay: "150ms" }}
+                  />
+                  <span
+                    className="w-1 h-1 bg-current rounded-full animate-bounce"
+                    style={{ animationDelay: "300ms" }}
+                  />
+                </span>
+              </span>
+            ) : (
+              subheading
+            )}
           </p>
         </div>
       </div>

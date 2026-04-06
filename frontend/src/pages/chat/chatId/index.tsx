@@ -65,7 +65,12 @@ const SingleChat = () => {
 
   return (
     <div className="relative h-svh flex flex-col">
-      <ChatHeader chat={chat} currentUserId={currentUserId} isTyping={isTyping} />
+      <ChatHeader 
+        chat={chat} 
+        currentUserId={currentUserId} 
+        isTyping={isTyping}
+        typingUsers={otherTypingUsers}
+      />
 
       <div className="flex-1 overflow-y-auto bg-background">
         {messages.length === 0 ? (

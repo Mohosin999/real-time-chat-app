@@ -72,6 +72,29 @@ const ChatList = () => {
     };
   }, [socket, updateChatLastMessage]);
 
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleChatDeleted = ({ chatId }: { chatId: string }) => {
+      // Remove the deleted chat from the list
+      useChat.setState((state) => ({
+        chats: state.chats.filter((c) => c._id !== chatId),
+        singleChat: state.singleChat?.chat._id === chatId ? null : state.singleChat,
+      }));
+      
+      // If we're currently viewing this chat, navigate away
+      if (window.location.pathname.includes(chatId)) {
+        navigate("/chat");
+      }
+    };
+
+    socket.on("chat:deleted", handleChatDeleted);
+
+    return () => {
+      socket.off("chat:deleted", handleChatDeleted);
+    };
+  }, [socket, navigate]);
+
   const onRoute = (id: string) => {
     navigate(`/chat/${id}`);
   };

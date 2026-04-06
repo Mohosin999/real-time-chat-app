@@ -2,7 +2,7 @@ import Chat from "../../model/Chat";
 import Message from "../../model/Message";
 import User from "../../model/User";
 import { badRequest } from "../../utils/error";
-import { emitNewChatToParticpants } from "../socket";
+import { emitNewChatToParticpants, emitChatDeleted } from "../socket";
 
 export const createChatService = async (
   userId: string,
@@ -142,4 +142,24 @@ export const validateChatParticipant = async (
 
   if (!chat) throw badRequest("User not a participant in chat");
   return chat;
+};
+
+export const deleteChatService = async (chatId: string, userId: string) => {
+  const chat = await Chat.findOne({
+    _id: chatId,
+    createdBy: userId,
+  });
+
+  if (!chat) throw badRequest("You are not authorized to delete this chat");
+
+  // Get participants before deleting to emit event
+  const participantIds = chat.participants.map((id) => id.toString());
+
+  await Message.deleteMany({ chatId });
+  await Chat.findByIdAndDelete(chatId);
+
+  // Emit chat deletion event to all participants
+  emitChatDeleted(participantIds, chatId);
+
+  return { success: true };
 };

@@ -165,3 +165,28 @@ export const emitLastMessageToParticipants = (
     io.to(`user:${participantId}`).emit("chat:update", payload);
   }
 };
+
+export const emitMessageDeleted = (
+  participantIds: string[],
+  chatId: string,
+  messageId: string
+) => {
+  const io = getIO();
+  const payload = { chatId, messageId };
+
+  for (const participantId of participantIds) {
+    io.to(`user:${participantId}`).emit("message:deleted", payload);
+  }
+};
+
+export const emitChatDeleted = (
+  participantIds: string[],
+  chatId: string
+) => {
+  const io = getIO();
+  const payload = { chatId };
+
+  for (const participantId of participantIds) {
+    io.to(`user:${participantId}`).emit("chat:deleted", payload);
+  }
+};

@@ -43,17 +43,18 @@ router.get("/me", isAuthenticated, (req, res) =>
 
 /* -------------------------------------------
               PROTECTED ROUTES
--------------------------------------------- */
+------------------------------------------- */
 router
-  .use("/api/v1", passportAuthenticateJwt)
-  .post("/api/v1/chats", chatControllers.createChat)
-  .get("/api/v1/chats", chatControllers.getUserChats)
-  .get("/api/v1/chats/:id", chatControllers.getSingleChat);
+  .post("/api/v1/chats", passportAuthenticateJwt, chatControllers.createChat)
+  .get("/api/v1/chats", passportAuthenticateJwt, chatControllers.getUserChats)
+  .get("/api/v1/chats/:id", passportAuthenticateJwt, chatControllers.getSingleChat)
+  .delete("/api/v1/chats/:chatId", passportAuthenticateJwt, chatControllers.deleteChat);
 
 // Message routes
-router.post("/api/v1/messages", messageControllers.sendMessage);
+router.post("/api/v1/messages", passportAuthenticateJwt, messageControllers.sendMessage);
+router.delete("/api/v1/messages/:messageId", passportAuthenticateJwt, messageControllers.deleteMessage);
 
 // User route
-router.get("/api/v1/users", userControllers.getUsers);
+router.get("/api/v1/users", passportAuthenticateJwt, userControllers.getUsers);
 
 export default router;

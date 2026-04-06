@@ -11,7 +11,7 @@ interface Props {
 }
 const ChatBody = ({ chatId, messages, onReply }: Props) => {
   const { socket } = useSocket();
-  const { addNewMessage } = useChat();
+  const { addNewMessage, removeMessage } = useChat();
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -19,12 +19,18 @@ const ChatBody = ({ chatId, messages, onReply }: Props) => {
     if (!socket) return;
 
     const handleNewMessage = (msg: MessageType) => addNewMessage(chatId, msg);
+    const handleMessageDeleted = ({ messageId }: { chatId: string; messageId: string }) => {
+      removeMessage(chatId, messageId);
+    };
 
     socket.on("message:new", handleNewMessage);
+    socket.on("message:deleted", handleMessageDeleted);
+    
     return () => {
       socket.off("message:new", handleNewMessage);
+      socket.off("message:deleted", handleMessageDeleted);
     };
-  }, [socket, chatId, addNewMessage]);
+  }, [socket, chatId, addNewMessage, removeMessage]);
 
   useEffect(() => {
     if (!messages.length) return;
@@ -40,6 +46,7 @@ const ChatBody = ({ chatId, messages, onReply }: Props) => {
           key={message._id}
           message={message}
           onReply={onReply}
+          chatId={chatId}
         />
       ))}
 

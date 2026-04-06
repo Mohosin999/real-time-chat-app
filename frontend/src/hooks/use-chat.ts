@@ -33,10 +33,12 @@ interface ChatState {
   createChat: (payload: CreateChatType) => Promise<ChatType | null>;
   fetchSingleChat: (chatId: string) => void;
   sendMessage: (payload: CreateMessageType) => void;
+  deleteChat: (chatId: string) => Promise<boolean>;
 
   addNewChat: (newChat: ChatType) => void;
   updateChatLastMessage: (chatId: string, lastMessage: MessageType) => void;
   addNewMessage: (chatId: string, message: MessageType) => void;
+  removeMessage: (chatId: string, messageId: string) => void;
 }
 
 export const useChat = create<ChatState>()((set, get) => ({
@@ -278,5 +280,50 @@ export const useChat = create<ChatState>()((set, get) => ({
         },
       });
     }
+  },
+
+  /**
+   * Delete a chat (only by the creator)
+   * Removes from database and clears from local state
+   */
+  deleteChat: async (chatId: string) => {
+    try {
+      await API.delete(`/chats/${chatId}`);
+
+      set((state) => ({
+        chats: state.chats.filter((c) => c._id !== chatId),
+        // Clear singleChat if it's the one being deleted
+        singleChat: state.singleChat?.chat._id === chatId ? null : state.singleChat,
+      }));
+
+      toast.success("Chat deleted successfully");
+      return true;
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Failed to delete chat");
+      return false;
+    }
+  },
+
+  /**
+   * Remove a message from local state (for unsend/delete functionality)
+   * Marks the message as deleted rather than removing it completely
+   */
+  removeMessage: (chatId: string, messageId: string) => {
+    set((state) => {
+      if (!state.singleChat || state.singleChat.chat._id !== chatId) {
+        return state;
+      }
+      return {
+        singleChat: {
+          ...state.singleChat,
+          // Mark message as deleted instead of removing it
+          messages: state.singleChat.messages.map((msg) =>
+            msg._id === messageId
+              ? { ...msg, content: null, image: null, deletedAt: new Date().toISOString() }
+              : msg
+          ),
+        },
+      };
+    });
   },
 }));

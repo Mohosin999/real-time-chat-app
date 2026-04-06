@@ -21,6 +21,7 @@ export type MessageType = {
   chatId: string;
   createdAt: string;
   updatedAt: string;
+  deletedAt?: string | null;
   //only frontend
   status?: string;
   streaming?: boolean;
