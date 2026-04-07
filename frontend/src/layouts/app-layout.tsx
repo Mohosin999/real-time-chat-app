@@ -17,8 +17,9 @@ const AppLayout = () => {
             // Mobile behavior
             chatId ? "hidden lg:block" : "block",
             // Desktop fixed width
-            "lg:w-[420px]",
-            "border-r border-border bg-sidebar",
+            // "lg:w-[420px]",
+            chatId ? "w-[420px]" : "lg:w-[380px]",
+            // "border-r border-border bg-sidebar",
           )}
         >
           <ChatList />

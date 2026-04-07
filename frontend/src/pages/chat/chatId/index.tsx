@@ -23,7 +23,7 @@ const SingleChat = () => {
   const messages = singleChat?.messages || [];
 
   const chatTypingUsers = typingUsers[chatId || ""] || [];
-  const otherTypingUsers = chatTypingUsers.filter(id => id !== currentUserId);
+  const otherTypingUsers = chatTypingUsers.filter((id) => id !== currentUserId);
   const isTyping = otherTypingUsers.length > 0;
 
   useEffect(() => {
@@ -65,9 +65,9 @@ const SingleChat = () => {
 
   return (
     <div className="relative h-svh flex flex-col">
-      <ChatHeader 
-        chat={chat} 
-        currentUserId={currentUserId} 
+      <ChatHeader
+        chat={chat}
+        currentUserId={currentUserId}
         isTyping={isTyping}
         typingUsers={otherTypingUsers}
       />
@@ -79,11 +79,7 @@ const SingleChat = () => {
             description="No messages yet. Send the first message"
           />
         ) : (
-          <ChatBody
-            chatId={chatId}
-            messages={messages}
-            onReply={setReplyTo}
-          />
+          <ChatBody chatId={chatId} messages={messages} onReply={setReplyTo} />
         )}
       </div>
 
