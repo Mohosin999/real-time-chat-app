@@ -9,7 +9,11 @@ interface AuthenticatedSocket extends Socket {
 
 let io: Server | null = null;
 
-const onlineUsers = new Map<string, string>();
+const onlineUsers = new Map<string, Set<string>>();
+
+function getOnlineUserIds(): string[] {
+  return Array.from(onlineUsers.keys()).filter((userId) => onlineUsers.get(userId)!.size > 0);
+}
 
 export const initializeSocket = (httpServer: HTTPServer) => {
   io = new Server(httpServer, {
@@ -60,18 +64,20 @@ export const initializeSocket = (httpServer: HTTPServer) => {
 
   io.on("connection", (socket: AuthenticatedSocket) => {
     const userId = socket.userId!;
-    const newSocketId = socket.id;
 
     if (!socket.userId) {
       socket.disconnect();
       return;
     }
 
-    // Register socket for the user
-    onlineUsers.set(userId, newSocketId);
+    // Register socket for the user - support multiple connections
+    if (!onlineUsers.has(userId)) {
+      onlineUsers.set(userId, new Set());
+    }
+    onlineUsers.get(userId)!.add(socket.id);
 
     // BroadCast online users to all socket
-    io?.emit("online:users", Array.from(onlineUsers.keys()));
+    io?.emit("online:users", getOnlineUserIds());
 
     // Create personnal room for user
     socket.join(`user:${userId}`);
@@ -112,10 +118,13 @@ export const initializeSocket = (httpServer: HTTPServer) => {
     });
 
     socket.on("disconnect", () => {
-      if (onlineUsers.get(userId) === newSocketId) {
-        if (userId) onlineUsers.delete(userId);
-
-        io?.emit("online:users", Array.from(onlineUsers.keys()));
+      const userSocketIds = onlineUsers.get(userId);
+      if (userSocketIds) {
+        userSocketIds.delete(socket.id);
+        if (userSocketIds.size === 0) {
+          onlineUsers.delete(userId);
+        }
+        io?.emit("online:users", getOnlineUserIds());
       }
     });
   });
@@ -144,10 +153,12 @@ export const emitNewMessageToChatRoom = (
   message: any
 ) => {
   const io = getIO();
-  const senderSocketId = onlineUsers.get(senderId?.toString());
+  const senderSocketIds = onlineUsers.get(senderId?.toString());
 
-  if (senderSocketId) {
-    io.to(`chat:${chatId}`).except(senderSocketId).emit("message:new", message);
+  if (senderSocketIds && senderSocketIds.size > 0) {
+    // Exclude all sender's socket IDs
+    const exceptIds = Array.from(senderSocketIds);
+    io.to(`chat:${chatId}`).except(exceptIds).emit("message:new", message);
   } else {
     io.to(`chat:${chatId}`).emit("message:new", message);
   }

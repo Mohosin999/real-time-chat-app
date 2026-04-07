@@ -40,7 +40,11 @@ const ChatMessageBody = memo(({ message, onReply, chatId }: Props) => {
       : message.replyTo?.sender?.name;
 
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const { ref: mobileMenuRef, isOpen: showMobileMenu, setIsOpen: setShowMobileMenu } = useOutsideClick(false);
+  const {
+    ref: mobileMenuRef,
+    isOpen: showMobileMenu,
+    setIsOpen: setShowMobileMenu,
+  } = useOutsideClick(false);
 
   const containerClass = cn(
     "group flex gap-2 py-3 px-4",
@@ -105,7 +109,9 @@ const ChatMessageBody = memo(({ message, onReply, chatId }: Props) => {
                 <>
                   <div className="flex items-center justify-between gap-2 mb-0.5 pb-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-semibold">{senderName}</span>
+                      <span className="text-xs font-semibold">
+                        {senderName}
+                      </span>
                       <span className="text-[11px] text-gray-700 dark:text-gray-300">
                         {formatChatTime(message?.createdAt)}
                       </span>
@@ -129,7 +135,12 @@ const ChatMessageBody = memo(({ message, onReply, chatId }: Props) => {
                             }}
                             className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-accent transition-colors"
                           >
-                            <ReplyIcon className={cn("w-4 h-4", isCurrentUser && "scale-x-[-1]")} />
+                            <ReplyIcon
+                              className={cn(
+                                "w-4 h-4",
+                                isCurrentUser && "scale-x-[-1]",
+                              )}
+                            />
                             <span>Reply</span>
                           </button>
                           {isCurrentUser && (
