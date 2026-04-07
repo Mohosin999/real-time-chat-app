@@ -5,7 +5,7 @@ import type { MessageType } from "@/types/chat";
 import AvatarWithBadge from "../avatar-with-badge";
 import { formatChatTime } from "@/lib/helper";
 import { Button } from "../ui/button";
-import { ReplyIcon, Trash2, MoreHorizontal, X } from "lucide-react";
+import { ReplyIcon, Trash2, MoreHorizontal } from "lucide-react";
 import { useChat } from "@/hooks/use-chat";
 import { toast } from "sonner";
 import { API } from "@/lib/axios-client";
@@ -39,8 +39,8 @@ const ChatMessageBody = memo(({ message, onReply, chatId }: Props) => {
       ? "You"
       : message.replyTo?.sender?.name;
 
-  const { ref: mobileMenuRef, isOpen: showMobileMenu, setIsOpen: setShowMobileMenu } = useOutsideClick(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const { ref: mobileMenuRef, isOpen: showMobileMenu, setIsOpen: setShowMobileMenu } = useOutsideClick(false);
 
   const containerClass = cn(
     "group flex gap-2 py-3 px-4",
@@ -110,15 +110,43 @@ const ChatMessageBody = memo(({ message, onReply, chatId }: Props) => {
                         {formatChatTime(message?.createdAt)}
                       </span>
                     </div>
-                    {/* Mobile: three dots inside message bubble */}
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setShowMobileMenu(true)}
-                      className="md:hidden !size-6 p-0"
-                    >
-                      <MoreHorizontal size={14} className="!stroke-[1.9]" />
-                    </Button>
+                    {/* Mobile: three dots with dropdown */}
+                    <div ref={mobileMenuRef} className="relative md:hidden">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setShowMobileMenu(!showMobileMenu)}
+                        className="!size-6 p-0"
+                      >
+                        <MoreHorizontal size={14} className="!stroke-[1.9]" />
+                      </Button>
+                      {showMobileMenu && (
+                        <div className="absolute right-0 top-full mt-1 w-40 bg-background border border-border rounded-md shadow-lg z-50 py-1">
+                          <button
+                            onClick={() => {
+                              onReply(message);
+                              setShowMobileMenu(false);
+                            }}
+                            className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-accent transition-colors"
+                          >
+                            <ReplyIcon className={cn("w-4 h-4", isCurrentUser && "scale-x-[-1]")} />
+                            <span>Reply</span>
+                          </button>
+                          {isCurrentUser && (
+                            <button
+                              onClick={() => {
+                                setShowMobileMenu(false);
+                                setShowDeleteDialog(true);
+                              }}
+                              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-destructive hover:bg-destructive/10 transition-colors"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                              <span>Delete</span>
+                            </button>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   {message.replyTo && (
@@ -223,45 +251,6 @@ const ChatMessageBody = memo(({ message, onReply, chatId }: Props) => {
               Delete
             </AlertDialogAction>
           </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      {/* Mobile Menu Dialog */}
-      <AlertDialog open={showMobileMenu} onOpenChange={setShowMobileMenu}>
-        <AlertDialogContent className="max-w-[300px] p-4">
-          <button
-            onClick={() => setShowMobileMenu(false)}
-            className="absolute right-3 top-3 p-1 rounded-full hover:bg-accent transition-colors"
-          >
-            <X size={18} />
-          </button>
-          <div className="flex flex-col gap-2 mt-2">
-            <button
-              onClick={() => {
-                onReply(message);
-                setShowMobileMenu(false);
-              }}
-              className="flex items-center gap-3 p-3 w-full rounded-lg hover:bg-accent transition-colors"
-            >
-              <ReplyIcon
-                size={20}
-                className={cn(isCurrentUser && "scale-x-[-1]")}
-              />
-              <span>Reply</span>
-            </button>
-            {isCurrentUser && (
-              <button
-                onClick={() => {
-                  setShowMobileMenu(false);
-                  setShowDeleteDialog(true);
-                }}
-                className="flex items-center gap-3 p-3 w-full rounded-lg hover:bg-destructive/10 text-destructive transition-colors"
-              >
-                <Trash2 size={20} />
-                <span>Delete</span>
-              </button>
-            )}
-          </div>
         </AlertDialogContent>
       </AlertDialog>
     </>
