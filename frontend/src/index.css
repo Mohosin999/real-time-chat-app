@@ -3,8 +3,17 @@
 
 html,
 hody {
+  /* height: 100%;
+  font-family: "DM Sans", serif !important; */
+  position: fixed;
+  width: 100%;
   height: 100%;
-  font-family: "DM Sans", serif !important;
+  overflow: hidden;
+}
+
+#root {
+  height: 100%;
+  overflow: hidden;
 }
 
 @custom-variant dark (&:is(.dark *));
@@ -184,19 +193,18 @@ hody {
   background: oklch(0.98 0.01 240 / 40%);
 }
 
-/* ============= Mobile Fixes ============= */
-* {
-  -webkit-tap-highlight-color: transparent;
-}
-
-/* Prevent pull-to-refresh on chat area */
-.overflow-y-auto {
-  overscroll-behavior: contain;
-}
-
-/* Better mobile scrolling */
+/* Make sure header stays on top on mobile keyboards */
 @media (max-width: 768px) {
-  .overflow-y-auto {
-    -webkit-overflow-scrolling: touch;
+  .sticky {
+    position: sticky !important;
+    top: 0 !important;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+
+  /* Prevent header from being pushed up by keyboard */
+  .h-dvh {
+    height: 100dvh;
+    max-height: -webkit-fill-available;
   }
 }

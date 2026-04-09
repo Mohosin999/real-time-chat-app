@@ -98,6 +98,7 @@
 // export default SingleChat;
 
 import ChatBody from "@/components/chat/chat-body";
+import ChatFooter from "@/components/chat/chat-footer";
 import ChatHeader from "@/components/chat/chat-header";
 import EmptyState from "@/components/empty-state";
 import { Spinner } from "@/components/ui/spinner";
@@ -107,7 +108,6 @@ import useChatId from "@/hooks/use-chat-id";
 import { useSocket } from "@/hooks/use-socket";
 import type { MessageType } from "@/types/chat";
 import { useEffect, useState, useRef } from "react";
-import ChatFooter from "@/components/chat/chat-footer";
 
 const SingleChat = () => {
   const chatId = useChatId();
@@ -117,6 +117,7 @@ const SingleChat = () => {
 
   const [replyTo, setReplyTo] = useState<MessageType | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   const currentUserId = user?._id || null;
   const chat = singleChat?.chat;
@@ -126,10 +127,13 @@ const SingleChat = () => {
   const otherTypingUsers = chatTypingUsers.filter((id) => id !== currentUserId);
   const isTyping = otherTypingUsers.length > 0;
 
-  // Auto scroll to latest message on load
+  // Auto scroll to latest message on load and new message
   useEffect(() => {
     if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "instant" });
+      messagesEndRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
     }
   }, [messages.length]);
 
@@ -149,6 +153,24 @@ const SingleChat = () => {
     };
   }, [chatId, socket]);
 
+  // Prevent body scroll when keyboard opens
+  useEffect(() => {
+    const handleResize = () => {
+      if (scrollAreaRef.current) {
+        // Maintain scroll position
+        const scrollTop = scrollAreaRef.current.scrollTop;
+        setTimeout(() => {
+          if (scrollAreaRef.current) {
+            scrollAreaRef.current.scrollTop = scrollTop;
+          }
+        }, 0);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   if (isSingleChatLoading) {
     return (
       <div className="h-dvh flex items-center justify-center">
@@ -166,10 +188,9 @@ const SingleChat = () => {
   }
 
   return (
-    // Fixed height container using dvh
-    <div className="h-dvh flex flex-col overflow-hidden bg-background">
-      {/* Header - Always visible */}
-      <div className="flex-shrink-0">
+    <div className="relative h-dvh flex flex-col bg-background overflow-hidden">
+      {/* Header - Always visible on top */}
+      <div className="sticky top-0 z-50 flex-shrink-0 bg-background border-b">
         <ChatHeader
           chat={chat}
           currentUserId={currentUserId}
@@ -178,12 +199,16 @@ const SingleChat = () => {
         />
       </div>
 
-      {/* Scrollable messages area - takes remaining space */}
+      {/* Scrollable messages area */}
       <div
+        ref={scrollAreaRef}
         className="flex-1 overflow-y-auto overscroll-contain"
-        style={{ WebkitOverflowScrolling: "touch" }}
+        style={{
+          WebkitOverflowScrolling: "touch",
+          position: "relative",
+        }}
       >
-        <div className="pb-2">
+        <div className="min-h-full">
           {messages.length === 0 ? (
             <EmptyState
               title="Start a conversation"
@@ -196,22 +221,19 @@ const SingleChat = () => {
                 messages={messages}
                 onReply={setReplyTo}
               />
-              {/* Invisible element to scroll to */}
-              <div ref={messagesEndRef} />
+              {/* Scroll anchor */}
+              <div ref={messagesEndRef} className="h-1" />
             </>
           )}
         </div>
       </div>
 
-      {/* Footer - Always visible */}
-      <div className="flex-shrink-0">
-        <ChatFooter
-          replyTo={replyTo}
-          chatId={chatId}
-          currentUserId={currentUserId}
-          onCancelReply={() => setReplyTo(null)}
-        />
-      </div>
+      <ChatFooter
+        replyTo={replyTo}
+        chatId={chatId}
+        currentUserId={currentUserId}
+        onCancelReply={() => setReplyTo(null)}
+      />
     </div>
   );
 };
