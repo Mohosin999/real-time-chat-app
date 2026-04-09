@@ -41,7 +41,7 @@ const ChatReplyBar = ({ replyTo, currentUserId, onCancel }: Props) => {
           variant="ghost"
           size="icon"
           onClick={onCancel}
-          className="shrink-0 siz-6"
+          className="shrink-0 siz-6 cursor-pointer"
         >
           <X size={14} />
         </Button>

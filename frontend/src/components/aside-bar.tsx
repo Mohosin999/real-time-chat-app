@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { useTheme } from "./theme-provider";
 import Logo from "./logo";
@@ -12,11 +13,14 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import AvatarWithBadge from "./avatar-with-badge";
+import { useNavigate } from "react-router-dom";
+import AlertDialogPopup from "@/components/alert-dialog-popup";
 
 const AsideBar = () => {
   const { user, logout } = useAuth();
-
+  const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
 
   // Logged in user is always online
   const isOnline = !!user;
@@ -89,12 +93,15 @@ const AsideBar = () => {
               className="w-48 rounded-lg ml-2 z-[99999]"
               align="end"
             >
-              <DropdownMenuItem className="py-2 cursor-pointer">
+              <DropdownMenuItem
+                onClick={() => navigate(PROTECTED_ROUTES.ACCOUNT)}
+                className="py-2 cursor-pointer"
+              >
                 <UserPen className="mr-0.5" />
                 My Account
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={logout}
+                onClick={() => setShowLogoutDialog(true)}
                 className="py-2 cursor-pointer"
               >
                 <LogOutIcon className="mr-0.5" />
@@ -104,6 +111,14 @@ const AsideBar = () => {
           </DropdownMenu>
         </div>
       </div>
+
+      <AlertDialogPopup
+        open={showLogoutDialog}
+        setOpen={setShowLogoutDialog}
+        onDelete={logout}
+        title="Logout"
+        description="Are you sure you want to logout?"
+      />
     </aside>
   );
 };

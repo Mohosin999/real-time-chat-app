@@ -32,7 +32,9 @@ export const NewChatPopover = memo(() => {
 
   const toggleUserSelection = (id: string) => {
     setSelectedUsers((prev) =>
-      prev.includes(id) ? prev.filter((userId) => userId !== id) : [...prev, id]
+      prev.includes(id)
+        ? prev.filter((userId) => userId !== id)
+        : [...prev, id],
     );
   };
 
@@ -87,7 +89,7 @@ export const NewChatPopover = memo(() => {
           onClick={() => setIsOpen(true)}
           variant="ghost"
           size="icon"
-          className="h-8 w-8"
+          className="h-8 w-8 cursor-pointer"
         >
           <PenBoxIcon className="!h-5 !w-5 !stroke-1" />
         </Button>
@@ -102,7 +104,12 @@ export const NewChatPopover = memo(() => {
         <div className="border-b p-3 flex flex-col gap-2">
           <div className="flex items-center gap-2">
             {isGroupMode && (
-              <Button variant="ghost" size="icon" onClick={handleBack}>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleBack}
+                className="cursor-pointer"
+              >
                 <ArrowLeft size={16} />
               </Button>
             )}
@@ -168,7 +175,7 @@ export const NewChatPopover = memo(() => {
           <div className="border-t p-3">
             <Button
               onClick={handleCreateGroup}
-              className="w-full"
+              className="w-full cursor-pointer"
               disabled={
                 isCreatingChat ||
                 !groupName.trim() ||
@@ -213,7 +220,7 @@ const NewGroupItem = memo(
       </div>
       <span>New Group</span>
     </button>
-  )
+  ),
 );
 
 NewGroupItem.displayName = "NewGroupItem";
@@ -241,7 +248,7 @@ const ChatUserItem = memo(
       <UserAvatar user={user} />
       {isLoading && <Spinner className="absolute right-2 w-4 h-4 ml-auto" />}
     </button>
-  )
+  ),
 );
 
 ChatUserItem.displayName = "ChatUserItem";
@@ -269,7 +276,7 @@ const GroupUserItem = memo(
         onCheckedChange={() => onToggle(user._id)}
       />
     </label>
-  )
+  ),
 );
 
 GroupUserItem.displayName = "GroupUserItem";

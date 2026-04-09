@@ -13,6 +13,7 @@ interface AuthState {
   isSigningUp: boolean;
   isAuthStatusLoading: boolean;
 
+  setUser: (user: UserType | null) => void;
   register: (data: RegisterType) => Promise<void>;
   login: (data: LoginType) => Promise<void>;
   logout: () => Promise<void>;
@@ -27,6 +28,8 @@ export const useAuth = create<AuthState>()(
       isLoggingIn: false,
       isSigningUp: false,
       isAuthStatusLoading: false,
+
+      setUser: (user) => set({ user }),
 
       /* ---------------------------------
        * Register

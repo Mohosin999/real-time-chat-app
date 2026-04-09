@@ -161,7 +161,7 @@ const ChatFooter = ({
                 variant="outline"
                 size="icon"
                 disabled={isSendingMsg}
-                className="rounded-full"
+                className="rounded-full cursor-pointer"
                 onClick={() => imageInputRef.current?.click()}
               >
                 <Paperclip className="h-4 w-4" />
@@ -199,7 +199,7 @@ const ChatFooter = ({
             <Button
               type="submit"
               size="icon"
-              className="rounded-lg"
+              className="rounded-lg cursor-pointer"
               disabled={isSendingMsg}
             >
               <Send className="h-3.5 w-3.5" />

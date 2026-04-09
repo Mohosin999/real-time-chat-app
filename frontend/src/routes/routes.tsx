@@ -53,6 +53,7 @@ export const PROTECTED_ROUTES = {
   HOME: "/", // home page for logged in users
   CHAT: "/chat",
   SINGLE_CHAT: "/chat/:chatId",
+  ACCOUNT: "/account",
 };
 
 export const authRoutesPaths = [
@@ -61,7 +62,7 @@ export const authRoutesPaths = [
 ];
 
 export const protectedRoutesPaths = [
-  { path: PROTECTED_ROUTES.HOME, element: <Chat /> }, // use your Home component if different
+  { path: PROTECTED_ROUTES.HOME, element: <Chat /> },
   { path: PROTECTED_ROUTES.CHAT, element: <Chat /> },
   { path: PROTECTED_ROUTES.SINGLE_CHAT, element: <SingleChat /> },
 ];

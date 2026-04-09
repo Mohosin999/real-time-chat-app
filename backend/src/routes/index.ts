@@ -39,5 +39,7 @@ router.delete("/api/v1/messages/:messageId", passportAuthenticateJwt, messageCon
 
 // User route
 router.get("/api/v1/users", passportAuthenticateJwt, userControllers.getUsers);
+router.put("/api/v1/users/profile", passportAuthenticateJwt, userControllers.updateProfile);
+router.delete("/api/v1/users/account", passportAuthenticateJwt, userControllers.deleteAccount);
 
 export default router;

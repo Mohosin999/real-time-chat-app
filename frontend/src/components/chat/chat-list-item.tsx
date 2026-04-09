@@ -6,18 +6,9 @@ import AvatarWithBadge from "../avatar-with-badge";
 import { formatChatTime } from "../../lib/helper";
 import { useChat } from "@/hooks/use-chat";
 import { useOutsideClick } from "@/hooks/use-outside-click";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { Trash2, MoreVertical } from "lucide-react";
 import { useState } from "react";
+import AlertDialogPopup from "../alert-dialog-popup";
 
 interface PropsType {
   chat: ChatType;
@@ -35,7 +26,11 @@ const ChatListItem = ({ chat, currentUserId, onClick }: PropsType) => {
     currentUserId,
   );
 
-  const { ref: menuRef, isOpen: showMenu, setIsOpen: setShowMenu } = useOutsideClick(false);
+  const {
+    ref: menuRef,
+    isOpen: showMenu,
+    setIsOpen: setShowMenu,
+  } = useOutsideClick(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const getLastMessageText = () => {
@@ -108,7 +103,7 @@ const ChatListItem = ({ chat, currentUserId, onClick }: PropsType) => {
 
         <div ref={menuRef} className="relative">
           <button
-            className="p-1.5 hover:bg-sidebar-accent rounded-md transition-colors"
+            className="p-1.5 hover:bg-sidebar-accent rounded-md transition-colors cursor-pointer"
             onClick={(e) => {
               e.stopPropagation();
               setShowMenu(!showMenu);
@@ -123,7 +118,7 @@ const ChatListItem = ({ chat, currentUserId, onClick }: PropsType) => {
               onClick={(e) => e.stopPropagation()}
             >
               <button
-                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-destructive hover:bg-destructive/10 transition-colors rounded-md"
+                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-destructive hover:bg-destructive/10 transition-colors rounded-md cursor-pointer"
                 onClick={(e) => {
                   e.stopPropagation();
                   setShowMenu(false);
@@ -139,26 +134,13 @@ const ChatListItem = ({ chat, currentUserId, onClick }: PropsType) => {
       </button>
 
       {/* Delete Confirmation Dialog */}
-      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Chat</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete this chat? This action cannot be
-              undone and all messages will be permanently deleted.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDelete}
-              className="bg-red-600 text-white hover:bg-red-700"
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <AlertDialogPopup
+        open={showDeleteDialog}
+        setOpen={setShowDeleteDialog}
+        onDelete={handleDelete}
+        title="Delete Chat"
+        description="Are you sure you want to delete this chat? This action cannot be undone and all messages will be permanently deleted."
+      />
     </>
   );
 };

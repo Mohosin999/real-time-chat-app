@@ -10,16 +10,7 @@ import { useChat } from "@/hooks/use-chat";
 import { toast } from "sonner";
 import { API } from "@/lib/axios-client";
 import { useOutsideClick } from "@/hooks/use-outside-click";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import AlertDialogPopup from "../alert-dialog-popup";
 
 interface Props {
   message: MessageType;
@@ -199,7 +190,7 @@ const ChatMessageBody = memo(({ message, onReply, chatId }: Props) => {
                   size="icon"
                   onClick={() => onReply(message)}
                   className="hidden md:flex opacity-0 group-hover:opacity-100
-              transition-opacity rounded-full !size-8
+              transition-opacity rounded-full !size-8 cursor-pointer
               "
                 >
                   <ReplyIcon
@@ -218,7 +209,7 @@ const ChatMessageBody = memo(({ message, onReply, chatId }: Props) => {
                     size="icon"
                     className="hidden md:flex opacity-0 group-hover:opacity-100
                     transition-opacity rounded-full !size-8
-                    text-destructive hover:text-destructive
+                    text-destructive hover:text-destructive cursor-pointer
                     "
                     onClick={(e) => {
                       e.stopPropagation();
@@ -244,26 +235,13 @@ const ChatMessageBody = memo(({ message, onReply, chatId }: Props) => {
       </div>
 
       {/* Delete Message Confirmation Dialog */}
-      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Message</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete this message? This action cannot
-              be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDeleteMessage}
-              className="bg-red-600 text-white hover:bg-red-700"
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <AlertDialogPopup
+        open={showDeleteDialog}
+        setOpen={setShowDeleteDialog}
+        onDelete={handleDeleteMessage}
+        title="Delete Message"
+        description="Are you sure you want to delete this message? This action cannot be undone."
+      />
     </>
   );
 });
