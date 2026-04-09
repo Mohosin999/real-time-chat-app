@@ -66,7 +66,7 @@ const SingleChat = () => {
   return (
     // <div className="relative h-svh flex flex-col">
     // <div className="relative h-full flex flex-col">
-    <div className="sticky top-0 h-full flex flex-col">
+    <div className="relative h-[100dvh] flex flex-col">
       <ChatHeader
         chat={chat}
         currentUserId={currentUserId}
