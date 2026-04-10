@@ -4,8 +4,13 @@ A modern, full-stack real-time chat application built with React, Node.js, Expre
 
 ![Tech Stack](https://img.shields.io/badge/Stack-React%20%7C%20Node.js%20%7C%20MongoDB%20%7C%20Socket.IO-blue)
 
+[![Live Demo](https://img.shields.io/badge/Live-Demo-2ea44f)](https://chatapp-client-theta.vercel.app/sign-in)
+
+![Project Screenshot](./frontend//public/chatapp.png)
+
 ## Table of Contents
 
+- [Live Demo](#live-demo)
 - [Features](#features)
 - [Tech Stack](#tech-stack)
 - [Prerequisites](#prerequisites)
@@ -17,6 +22,10 @@ A modern, full-stack real-time chat application built with React, Node.js, Expre
 - [WebSocket Events](#websocket-events)
 - [Database Schema](#database-schema)
 - [Contributing](#contributing)
+
+## Live Demo
+
+[Chat App](https://chatapp-client-theta.vercel.app/sign-in) - Try the live application
 
 ## Features
 
